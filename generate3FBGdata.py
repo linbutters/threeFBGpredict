@@ -34,4 +34,3 @@ for i in range(0,1000):
 
     table = np.array([x,traceA]).T
     writer.writerows(table)
-
