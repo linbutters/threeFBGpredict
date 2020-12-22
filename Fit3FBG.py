@@ -59,7 +59,7 @@ def fit3(data):
     print(Ppos)
     d = np.array([0.1, 0, 0])
 
-    center, width, height = optimize(data, center, width, height, d, 20)
+    center, width, height = optimize(data, center, width, height, d, 50)
 
 
     return center, width, height
