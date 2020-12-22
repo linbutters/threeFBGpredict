@@ -15,6 +15,7 @@ def optimize(data, center, width, height, d, iterations=20, F=.5, CR=0.1, NP=50)
     Perror = None
     PX = None
 
+    
     for t in range(iterations):
         if PX is not None:
             X = de.mutate(PX)

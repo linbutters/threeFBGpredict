@@ -10,7 +10,7 @@ import numpy as np
 
 
 set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
-set_width = np.ones(3) * 0.207
+set_width = np.ones(3) * 0.206
 set_area = set_width * set_height
 
 FOUR_LOG_TWO = 4*np.log(2)
@@ -57,9 +57,9 @@ def fit3(data):
     height = set_height
 
     print(Ppos)
-    d = np.array([0.1, 0, 0])
+    d = np.array([0.05, 0, 0])
 
-    center, width, height = optimize(data, center, width, height, d, 25)
+    center, width, height = optimize(data, center, width, height, d, 30)
 
     return center, width, height
 
@@ -89,9 +89,10 @@ for i in range(1, 40):
         ax[0].plot(*data, c='black', label="measured")
         ax[0].plot(x, result, c='green', label="simulated")
 
-        ax[0].grid()
-        ax[0].legend()
-        ax[1].grid()
-        ax[1].legend()
+        for a in ax:
+            a.grid()
+            a.legend()
+            a.set_ylim([1e-7, 1e-4])
+            a.set_yscale('log')
 
         plt.show()
