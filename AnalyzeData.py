@@ -5,6 +5,7 @@ from data_prepare.compensate import noise_compensate, gain_compensate
 from algorithm.GaussianFit import fit
 from algorithm.DE_FBG import optimize
 
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -22,7 +23,9 @@ for i in range(1, 40):
     data[1] = data[1]*gain_compensate-noise_compensate
     data[1] = smooth(data[1], 50)
 
+
     center, width, height = fit(data)
+
 
     d = np.array([0.1, 0.01, 1e-7])
 
