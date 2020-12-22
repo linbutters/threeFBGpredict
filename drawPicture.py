@@ -8,5 +8,6 @@ for i in range(1,41):
     x=data[0]
     y=data[1]
     plt.plot(x,y)
-    plt.pause(0.02)
+    plt.yscale("log")
+    plt.pause(0.5)
     plt.clf()
