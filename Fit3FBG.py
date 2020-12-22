@@ -45,9 +45,9 @@ def fit3(data):
 
     for p in possibilitys:
         err = 0
-        for i,a in enumerate(area):
-            err += (np.sum(set_area[p==i])-a)**2
-        
+        for i, a in enumerate(area):
+            err += (np.sum(set_area[p == i])-a)**2
+
         if Perr is None or err < Perr:
             Perr = err
             Ppos = p
@@ -59,10 +59,10 @@ def fit3(data):
     print(Ppos)
     d = np.array([0.1, 0, 0])
 
-    center, width, height = optimize(data, center, width, height, d, 50)
-
+    center, width, height = optimize(data, center, width, height, d, 25)
 
     return center, width, height
+
 
 for i in range(1, 40):
     filename = './data/Measured3FBG{:04d}.csv'.format(i)
@@ -70,18 +70,28 @@ for i in range(1, 40):
 
     data = load(filename)
 
-
     center, width, height = fit3(data)
 
     if True:
-        plt.plot(*data, c='black')
+        x = data[0]
+
+        result = np.zeros(len(x))
+
+        fig, ax = plt.subplots(2, 1, sharex=True)
 
         for i, c in enumerate(center):
             w = width[i]
             h = height[i]
-            x = data[0]
             f = h*np.exp(-((x-c)/w)**2*FOUR_LOG_TWO)
-            plt.plot(x, f)
+            result += f
+            ax[1].plot(x, f, label="fbg{}".format(i))
+
+        ax[0].plot(*data, c='black', label="measured")
+        ax[0].plot(x, result, c='green', label="simulated")
+
+        ax[0].grid()
+        ax[0].legend()
+        ax[1].grid()
+        ax[1].legend()
 
         plt.show()
-
