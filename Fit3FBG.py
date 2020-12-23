@@ -63,40 +63,40 @@ def fit3(data):
 
     return center, width, height
 
+if __name__ == "__main__":
+    for i in range(1, 40):
+        filename = './data/Measured3FBG{:04d}.csv'.format(i)
+        print(filename)
 
-for i in range(1, 40):
-    filename = './data/Measured3FBG{:04d}.csv'.format(i)
-    print(filename)
+        data = load(filename)
 
-    data = load(filename)
+        start_time = time.time()
 
-    start_time = time.time()
+        center, width, height = fit3(data)
 
-    center, width, height = fit3(data)
+        print("time(sec): ", time.time()-start_time)
 
-    print("time(sec): ", time.time()-start_time)
+        if True:
+            x = data[0]
 
-    if True:
-        x = data[0]
+            result = np.zeros(len(x))
 
-        result = np.zeros(len(x))
+            fig, ax = plt.subplots(2, 1, sharex=True)
 
-        fig, ax = plt.subplots(2, 1, sharex=True)
+            for i, c in enumerate(center):
+                w = width[i]
+                h = height[i]
+                f = h*np.exp(-((x-c)/w)**2*FOUR_LOG_TWO)
+                result += f
+                ax[1].plot(x, f, label="fbg{}".format(i))
 
-        for i, c in enumerate(center):
-            w = width[i]
-            h = height[i]
-            f = h*np.exp(-((x-c)/w)**2*FOUR_LOG_TWO)
-            result += f
-            ax[1].plot(x, f, label="fbg{}".format(i))
+            ax[0].plot(*data, c='black', label="measured")
+            ax[0].plot(x, result, c='green', label="simulated")
 
-        ax[0].plot(*data, c='black', label="measured")
-        ax[0].plot(x, result, c='green', label="simulated")
+            for a in ax:
+                a.grid()
+                a.legend()
+                a.set_ylim([1e-7, 1e-4])
+                a.set_yscale('log')
 
-        for a in ax:
-            a.grid()
-            a.legend()
-            a.set_ylim([1e-7, 1e-4])
-            a.set_yscale('log')
-
-        plt.show()
+            plt.show()
