@@ -1,5 +1,5 @@
 from algorithm.GaussianFit import fit
-from algorithm.DE_FBG import optimize
+from algorithm.DE_FBG_TF import optimize_TF
 
 from data_prepare.loader import load
 from data_prepare.smooth import smooth
@@ -7,6 +7,7 @@ from data_prepare.compensate import noise_compensate, gain_compensate
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 import time
 
 set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
@@ -58,8 +59,7 @@ def fit3(data):
 
     print(Ppos)
     d = np.array([0.05, 0, 0])
-
-    center, width, height = optimize(data, center, width, height, d, 50)
+    center, width, height = optimize_TF(data.astype("float32"), center, width, height, d, 50)
 
     return center, width, height
 
@@ -67,8 +67,6 @@ def fit3(data):
 for i in range(1, 40):
     filename = './data/Measured3FBG{:04d}.csv'.format(i)
     print(filename)
-
-
     data = load(filename)
 
     start_time = time.time()
