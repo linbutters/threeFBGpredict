@@ -1,5 +1,6 @@
 from algorithm.GaussianFit import fit
 from algorithm.DE_FBG import optimize
+from algorithm.FBG import simulate
 
 from data_prepare.loader import load
 from data_prepare.smooth import smooth
@@ -10,7 +11,7 @@ import numpy as np
 import time
 
 set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
-set_width = np.ones(3) * 0.206
+set_width = np.ones(3) * 0.2
 set_area = set_width * set_height
 
 FOUR_LOG_TWO = 4*np.log(2)
@@ -44,9 +45,8 @@ def fit3(data):
     Ppos = None
 
     for p in possibilitys:
-        err = 0
-        for i, a in enumerate(area):
-            err += (np.sum(set_area[p == i])-a)**2
+        err = np.sum((simulate(data[0],
+                               np.array([[np.array(center)[p], set_width, set_height]])) - data[1])**2)
 
         if Perr is None or err < Perr:
             Perr = err
@@ -63,41 +63,40 @@ def fit3(data):
 
     return center, width, height
 
+if __name__ == "__main__":
+    for i in range(1, 40):
+        filename = './data/Measured3FBG{:04d}.csv'.format(i)
+        print(filename)
 
-for i in range(1, 40):
-    filename = './data/Measured3FBG{:04d}.csv'.format(i)
-    print(filename)
+        data = load(filename)
 
+        start_time = time.time()
 
-    data = load(filename)
+        center, width, height = fit3(data)
 
-    start_time = time.time()
+        print("time(sec): ", time.time()-start_time)
 
-    center, width, height = fit3(data)
+        if True:
+            x = data[0]
 
-    print("time(sec): ", time.time()-start_time)
+            result = np.zeros(len(x))
 
-    if True:
-        x = data[0]
+            fig, ax = plt.subplots(2, 1, sharex=True)
 
-        result = np.zeros(len(x))
+            for i, c in enumerate(center):
+                w = width[i]
+                h = height[i]
+                f = h*np.exp(-((x-c)/w)**2*FOUR_LOG_TWO)
+                result += f
+                ax[1].plot(x, f, label="fbg{}".format(i))
 
-        fig, ax = plt.subplots(2, 1, sharex=True)
+            ax[0].plot(*data, c='black', label="measured")
+            ax[0].plot(x, result, c='green', label="simulated")
 
-        for i, c in enumerate(center):
-            w = width[i]
-            h = height[i]
-            f = h*np.exp(-((x-c)/w)**2*FOUR_LOG_TWO)
-            result += f
-            ax[1].plot(x, f, label="fbg{}".format(i))
+            for a in ax:
+                a.grid()
+                a.legend()
+                a.set_ylim([1e-7, 1e-4])
+                a.set_yscale('log')
 
-        ax[0].plot(*data, c='black', label="measured")
-        ax[0].plot(x, result, c='green', label="simulated")
-
-        for a in ax:
-            a.grid()
-            a.legend()
-            a.set_ylim([1e-7, 1e-4])
-            a.set_yscale('log')
-
-        plt.show()
+            plt.show()

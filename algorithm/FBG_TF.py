@@ -6,8 +6,8 @@ def simulate_TF(x_coord, X):
     """
     X = (NP, c/w/h, nFBG)
     """
-    x_coord = tf.tile(x_coord[tf.newaxis, tf.newaxis, :],
-                      [X.shape[0], X.shape[2], 1])
+    x_coord = tf.cast(tf.tile(x_coord[tf.newaxis, tf.newaxis, :],
+                      [X.shape[0], X.shape[2], 1]), tf.dtypes.float32)
     c = X[:, 0][:, :, tf.newaxis]
     w = X[:, 1][:, :, tf.newaxis]
     h = X[:, 2][:, :, tf.newaxis]

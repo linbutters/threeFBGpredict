@@ -8,7 +8,7 @@ def iterate(de):
         if Perror[0] >= 0:
             X = de.mutate(PX)
         spectra = simulate_TF(data[0], X)
-        error = tf.reduce_sum((spectra - data[1, tf.newaxis, :])**2, 1)
+        error = tf.reduce_sum((spectra - tf.cast(data[1, tf.newaxis, :], tf.dtypes.float32))**2, 1)
 
         if Perror[0] >= 0:
             compare = tf.cast(error < Perror, tf.dtypes.float32)
