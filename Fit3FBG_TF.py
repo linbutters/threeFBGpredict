@@ -12,8 +12,9 @@ import numpy as np
 
 import time
 
-set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
-set_width = np.ones(3) * 0.2
+# set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
+set_height = np.array([65.2, 25.7, 7.5]) * 1e-6
+set_width = np.ones(3) * 0.3
 set_area = set_width * set_height
 
 FOUR_LOG_TWO = 4*np.log(2)
@@ -32,7 +33,7 @@ def permute(n, m):
 
 
 def fit3(data):
-    data[1] = data[1]*gain_compensate-noise_compensate
+    # data[1] = data[1]*gain_compensate-noise_compensate
     data[1] = smooth(data[1], 50)
 
     center, width, height = fit(data)
@@ -56,7 +57,7 @@ def fit3(data):
             Perr = err
             Ppos = p
 
-    if True:
+    if False:
         x = data[0]
 
         result = np.zeros(len(x))
@@ -87,7 +88,7 @@ def fit3(data):
 
     print(Ppos)
     d = np.array([0.1, 0, 0])
-    center, width, height = optimize_TF(data, center, width, height, d, 100)
+    center, width, height = optimize_TF(data, center, width, height, d, 50)
 
     return center, width, height
 

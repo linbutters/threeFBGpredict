@@ -1,8 +1,20 @@
 from data_prepare.smooth import smooth
 from data_prepare.loader import load
 import numpy as np
+import matplotlib.pyplot as plt
 
 background_noise = load('./data/Measured3FBGnoise.csv')
+
+points = 1001
+
+start = 1545
+stop = 1550
+
+background_noise = np.array([
+    np.linspace(start, stop, points),
+    np.linspace(2.485e-6, 2.246e-6, points)
+])
+
 smooth_noise = smooth(background_noise[1])
 
 if False:

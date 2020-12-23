@@ -10,8 +10,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
-set_width = np.ones(3) * 0.2
+# set_height = np.array([5.3, 2.15, 0.37]) * 1e-5
+set_height = np.array([65.2, 25.7, 7.5]) * 1e-6
+set_width = np.ones(3) * 0.3
 set_area = set_width * set_height
 
 FOUR_LOG_TWO = 4*np.log(2)
@@ -30,12 +31,14 @@ def permute(n, m):
 
 
 def fit3(data):
-    data[1] = data[1]*gain_compensate-noise_compensate
+    # data[1] = data[1]*gain_compensate-noise_compensate
     data[1] = smooth(data[1], 50)
 
     center, width, height = fit(data)
 
-    print(center, width, height)
+    print("center: ", center)
+    print("width: ", width)
+    print("height: ", height)
 
     area = np.array(width) * np.array(height)
 
@@ -57,9 +60,9 @@ def fit3(data):
     height = set_height
 
     print(Ppos)
-    d = np.array([0.05, 0, 0])
+    d = np.array([0.02, 0, 0])
 
-    center, width, height = optimize(data, center, width, height, d, 50)
+    center, width, height = optimize(data, center, width, height, d, 100)
 
     return center, width, height
 

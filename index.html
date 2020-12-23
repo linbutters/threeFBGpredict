@@ -1,0 +1,103 @@
+<canvas id="myChart" width="300" height="130"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+
+    var set1 = {
+        label: 'Spectra',
+        data: [1, 5, 3],
+        fill: false,
+        showLine: true,
+        borderColor: 'black'
+    }
+
+    var fbgs = []
+
+    for (var i = 0; i < 3; i++) {
+        fbgs.push({
+            label: 'FBG ' + (i + 1),
+            data: [1, 5, 3],
+            fill: false,
+            showLine: true,
+            borderColor: ['blue', 'orange', 'green'][i]
+
+        })
+    }
+
+    var config = {
+        type: 'scatter',
+        data: {
+            datasets: [set1, ...fbgs]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Chart.js Line Chart'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Wavelength'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Intensity'
+                    }
+                }]
+            }
+        }
+    }
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, config);
+
+    function update() {
+        var xhr = new XMLHttpRequest()
+        xhr.open('get', '/data')
+        xhr.onload = function () {
+            var result = JSON.parse(xhr.response)
+            var data = []
+            var max = 0
+            for (var i = 0; i < result.data[0].length; i++) {
+                if (result.data[1][i] > max) max = result.data[1][i]
+                data.push({
+                    x: result.data[0][i],
+                    y: result.data[1][i]
+                })
+            }
+
+            for (var i = 0; i < result.center.length; i++) {
+                var c = result.center[i]
+                fbgs[i].data = [
+                    { x: c, y: 0 }, { x: c, y: max }
+                ]
+            }
+
+            set1.data = data
+            myChart.update()
+
+            setTimeout(() => {
+                update()
+            }, 10);
+        }
+        xhr.send()
+    }
+
+    update()
+
+
+
+</script>

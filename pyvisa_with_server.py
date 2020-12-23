@@ -9,11 +9,11 @@ inst = rm.open_resource(resources[-1])
 print(inst.query("*IDN?"))
 
 x = np.linspace(1545,1550,2001)
-inst.write("STA 1545 ; STO 1550 ; LLV 367NW ; MPT 2001")  #掃描起點1545 ; 終點1550 ; 線性level 367nW ; 掃描51個點
+inst.write("STA 1545 ; STO 1550 ; MPT 2001")  #掃描起點1545 ; 終點1550 ; 掃描51個點
 
 def DE(traceA):
     #FBGs = [peak1,peak2,peak3]
-    return FBGs    
+    return FBGs
 
 def draw(traceA):
     FBGs = []
@@ -25,14 +25,14 @@ def draw(traceA):
     plt.legend()
 
 
-
+'''
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 
 hostName = "10.123.2.115"
 serverPort = 1234
 
-class MyServer(BaseHTTPRequestHandler):
+class MyServer(BaseHTTPRequestHandl er):
     def do_GET(self):
 
         traceA_data = inst.query("SSI ; *WAI ; PKL ; DMA?")  # 單次掃描 ; 等待處理完畢 ; peak對齊ref level ; 回傳數據(字串)
@@ -59,3 +59,4 @@ if __name__ == "__main__":
 
     webServer.server_close()
     print("Server stopped.")
+'''
